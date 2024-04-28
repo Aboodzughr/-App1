@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
@@ -9,6 +8,18 @@ namespace ConsoleApp1
         Todo,
         Doing,
         Done
+    }
+
+    public class Task
+    {
+        public string Description { get; set; }
+        public TaskStatus Status { get; set; }
+
+        public Task(string description, TaskStatus status)
+        {
+            Description = description;
+            Status = status;
+        }
     }
 
     public class TaskManager
@@ -24,7 +35,7 @@ namespace ConsoleApp1
         {
             for (int i = 0; i < tasks.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. - {tasks[i].Status}");
+                Console.WriteLine($"{i + 1}. {tasks[i].Description} - {tasks[i].Status}");
             }
         }
 
@@ -32,7 +43,7 @@ namespace ConsoleApp1
         {
             if (index >= 0 && index < tasks.Count)
             {
-                tasks.RemoveAt(index);
+                tasks[index].Status = TaskStatus.Done;
             }
         }
 
@@ -67,49 +78,57 @@ namespace ConsoleApp1
                 Console.WriteLine("-------------");
                 string choice = Console.ReadLine();
 
-                switch (choice)
+                try
                 {
-                    case "1":
-                        Console.Write("Task: ");
-                        taskManager.AddTask(Console.ReadLine());
-                        break;
+                    switch (choice)
+                    {
+                        case "1":
+                            Console.Write("Task: ");
+                            taskManager.AddTask(Console.ReadLine());
+                            break;
 
-                    case "2":
-                        taskManager.ViewTasks();
-                        break;
+                        case "2":
+                            taskManager.ViewTasks();
+                            break;
 
-                    case "3":
-                        Console.Write("Done : ");
-                        int doneIndex = int.Parse(Console.ReadLine()) - 1;
-                        if (taskManager.IsValidIndex(doneIndex))
-                        {
-                            taskManager.MarkTaskDone(doneIndex);
-                        }
-                        break;
-
-                    case "4":
-                        Console.Write("Task : ");
-                        int statusIndex = int.Parse(Console.ReadLine()) - 1;
-                        if (taskManager.IsValidIndex(statusIndex))
-                        {
-                            Console.Write("Status (Todo, Doing, Done): ");
-                            if (Enum.TryParse<TaskStatus>(Console.ReadLine(), true, out TaskStatus newStatus))
+                        case "3":
+                            Console.Write("Done : ");
+                            int doneIndex = int.Parse(Console.ReadLine()) - 1;
+                            if (taskManager.IsValidIndex(doneIndex))
                             {
-                                taskManager.UpdateTaskStatus(statusIndex, newStatus);
+                                taskManager.MarkTaskDone(doneIndex);
+                            }
+                            break;
+
+                        case "4":
+                            Console.Write("Task : ");
+                            int statusIndex = int.Parse(Console.ReadLine()) - 1;
+                            if (taskManager.IsValidIndex(statusIndex))
+                            {
+                                Console.Write("Status (Todo, Doing, Done): ");
+                                if (Enum.TryParse<TaskStatus>(Console.ReadLine(), true, out TaskStatus newStatus))
+                                {
+                                    taskManager.UpdateTaskStatus(statusIndex, newStatus);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid status!");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine("Invalid status!");
+                                Console.WriteLine("Not found!");
                             }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Not found!");
-                        }
-                        break;
+                            break;
 
-                    case "5":
-                        return;
+                        case "5":
+                            return;
+                    }
+                }
+
+                catch (FormatException)
+                {
+                    Console.WriteLine("Please enter a valid number.");
                 }
             }
         }
