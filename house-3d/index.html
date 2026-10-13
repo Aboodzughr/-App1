@@ -679,6 +679,10 @@ function vanity(x0, x1, zw, dir){
   B(x0 + 0.02, x1 - 0.02, 1.06, 1.98, zw, zw + dir * 0.008, M.led, { cast: false });
   B(x0 + 0.05, x1 - 0.05, 1.09, 1.95, zw + dir * 0.008, zw + dir * 0.022, M.mirror, { cast: false });
 }
+function books(x, y, z){
+  const cols = ['#D9CDB7', '#7B5234', '#B9A487'];
+  cols.forEach((c, i) => B(x - 0.1 + i * 0.005, x + 0.1, y + i * 0.03, y + (i + 1) * 0.03, z - 0.13, z + 0.13 - i * 0.01, std({ color: c, roughness: 0.8 })));
+}
 function plant(x, z, s = 1){
   C(x, z, 0.17 * s, 0, 0.42 * s, M.pot, { rt: 0.2 * s });
   const r = rng(Math.round(x * 100 + z * 7));
@@ -699,12 +703,15 @@ function chair(x, z, face){ // outdoor lounge chair, face = direction seated per
 }
 
 // Kitchen: L-shaped run + peninsula, tall appliance wall toward the hall
+const KS = { steel: std({ color: '#C9CCCE', metalness: 0.85, roughness: 0.3 }), glass: std({ color: '#0E0F11', roughness: 0.08, metalness: 0.2 }) };
 B(0, 0.6, 0.08, 0.86, 0, 3.35, M.wood, { solid: true }); B(0.62, 3.78, 0.08, 0.86, 0, 0.6, M.wood, { solid: true }); B(3.78, 4.38, 0.08, 0.86, 0, 2.0, M.wood, { solid: true });
 B(0, 0.56, 0, 0.08, 0, 3.35, M.gap, { cast: false }); B(0.62, 3.78, 0, 0.08, 0, 0.56, M.gap, { cast: false }); B(3.82, 4.38, 0, 0.08, 0, 2.0, M.gap, { cast: false });
 B(0, 0.62, 0.86, 0.9, 0, 3.35, M.counter); B(0.62, 3.78, 0.86, 0.9, 0, 0.62, M.counter); B(3.76, 4.4, 0.86, 0.9, 0, 2.02, M.counter);
 gaps('x', 0.6, 0.62, 3.78, 0.6, 0.1, 0.84, 0.6); gaps('z', 0.6, 0.62, 2.73, 0.6, 0.1, 0.84, 0.6); gaps('z', 3.78, 0.62, 2.0, 0.69, 0.1, 0.84, 3.776);
 B(2.05, 2.75, 0.9, 0.903, 0.1, 0.5, M.black, { cast: false }); C(2.4, 0.08, 0.016, 0.9, 1.22, M.metal); B(2.388, 2.412, 1.19, 1.22, 0.08, 0.3, M.metal);
 B(0.06, 0.56, 0.9, 0.905, 1.62, 2.3, M.black, { cast: false });
+// dishwasher under the counter, left of the sink (stainless front)
+B(1.44, 2.04, 0.1, 0.845, 0.6, 0.608, KS.steel, { cast: false }); B(1.5, 1.98, 0.76, 0.775, 0.608, 0.635, KS.steel); B(1.44, 2.04, 0.8, 0.845, 0.608, 0.61, KS.glass, { cast: false });
 B(0, 0.5, 1.66, 1.76, 1.62, 2.3, M.black); B(0, 0.3, 1.76, H, 1.8, 2.12, M.black);
 B(0, 1.72, 1.5, 2.4, 0, 0.35, M.wood); B(3.06, 3.8, 1.5, 2.4, 0, 0.35, M.wood); B(0, 0.35, 1.5, 2.4, 0.62, 1.55, M.wood);
 gaps('x', 0.35, 0, 1.72, 0.43, 1.52, 2.38, 0.35); gaps('x', 0.35, 3.06, 3.8, 0.37, 1.52, 2.38, 0.35);
@@ -712,30 +719,35 @@ B(0.02, 1.7, 1.49, 1.5, 0.04, 0.32, M.led, { cast: false }); B(3.08, 3.78, 1.49,
 B(0, 1.81, 0.9, 1.5, 0, 0.012, M.counter, { cast: false }); B(1.81, 2.97, 0.9, 1.1, 0, 0.012, M.counter, { cast: false }); B(2.97, 3.8, 0.9, 1.5, 0, 0.012, M.counter, { cast: false });
 B(0, 0.012, 0.9, 1.5, 0.62, 1.62, M.counter, { cast: false }); B(0, 0.012, 0.9, 1.66, 1.62, 2.3, M.counter, { cast: false }); B(0, 0.012, 0.9, 1.5, 2.3, 3.35, M.counter, { cast: false });
 B(0, 0.35, 1.5, 2.4, 2.3, 3.35, M.wood); gaps('z', 0.35, 2.3, 3.35, 0.525, 1.52, 2.38, 0.35);
-// tall units on the kitchen/hall wall (front face z = 2.73): oven + microwave, fridge, pantry, then a coffee corner
+// tall wall opposite the sink (front face z = 2.73): pantry, oven + microwave, stainless fridge facing the sink, coffee corner
 {
   const TZ = 2.73, WZ = 3.35, F = TZ - 0.006;
-  B(0.62, 2.72, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
-  B(0.62, 2.72, 0.08, H, TZ, WZ, M.wood, { solid: true });
-  for (const u of [1.22, 2.12]) B(u - 0.003, u + 0.003, 0.08, H, F, TZ, M.gap, { cast: false });
-  B(0.62, 2.72, 2.397, 2.403, F, TZ, M.gap, { cast: false });
-  // oven + microwave column
-  B(0.67, 1.17, 0.78, 1.38, F, TZ, M.black, { cast: false }); B(0.72, 1.12, 1.32, 1.335, TZ - 0.045, F, M.metal);
-  B(0.67, 1.17, 1.46, 1.84, F, TZ, M.black, { cast: false }); B(0.72, 1.12, 1.79, 1.805, TZ - 0.045, F, M.metal);
-  B(0.62, 1.22, 0.447, 0.453, F, TZ, M.gap, { cast: false });
-  // integrated french-door fridge with freezer drawer
-  B(1.22, 2.12, 0.847, 0.853, F, TZ, M.gap, { cast: false }); B(1.667, 1.673, 0.85, 2.4, F, TZ, M.gap, { cast: false });
-  B(1.62, 1.635, 1.0, 1.95, TZ - 0.05, F, M.metal); B(1.705, 1.72, 1.0, 1.95, TZ - 0.05, F, M.metal);
-  B(1.45, 1.89, 0.74, 0.755, TZ - 0.05, F, M.metal);
-  // pantry
-  B(2.165, 2.18, 0.9, 1.7, TZ - 0.05, F, M.metal);
-  // coffee corner
-  B(2.72, 3.7, 0.08, 0.86, TZ, WZ, M.wood, { solid: true }); B(2.72, 3.7, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
-  B(2.72, 3.72, 0.86, 0.9, TZ - 0.02, WZ, M.counter); gaps('x', TZ, 2.72, 3.7, 0.49, 0.1, 0.84, F);
-  B(2.72, 3.72, 0.9, 1.5, WZ - 0.012, WZ, M.counter, { cast: false });
-  B(2.72, 3.72, 1.5, 2.4, WZ - 0.35, WZ, M.wood); gaps('x', WZ - 0.35, 2.72, 3.72, 0.5, 1.52, 2.38, WZ - 0.354);
-  B(2.74, 3.7, 1.49, 1.5, WZ - 0.32, WZ - 0.04, M.led, { cast: false });
-  B(2.85, 3.17, 0.9, 1.28, WZ - 0.44, WZ - 0.06, M.black); B(3.38, 3.58, 0.9, 1.15, WZ - 0.3, WZ - 0.06, M.ceramic);
+  B(0.62, 1.95, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
+  B(0.62, 1.95, 0.08, H, TZ, WZ, M.wood, { solid: true });
+  B(1.95, 2.85, 2.0, H, TZ, WZ, M.wood);                                   // cabinet above the fridge
+  for (const u of [0.985, 1.35, 1.95, 2.85]) B(u - 0.003, u + 0.003, 0.08, H, F, TZ, M.gap, { cast: false });
+  B(0.62, 1.95, 2.397, 2.403, F, TZ, M.gap, { cast: false });
+  // pantry: two tall doors with long handles
+  B(0.94, 0.955, 0.9, 1.75, TZ - 0.05, F, M.metal); B(1.015, 1.03, 0.9, 1.75, TZ - 0.05, F, M.metal);
+  // oven with microwave above
+  B(1.4, 1.9, 0.8, 1.38, F, TZ, KS.glass, { cast: false }); B(1.45, 1.85, 1.33, 1.345, TZ - 0.045, F, KS.steel);
+  B(1.4, 1.9, 1.46, 1.84, F, TZ, KS.glass, { cast: false }); B(1.45, 1.85, 1.8, 1.815, TZ - 0.045, F, KS.steel);
+  B(1.35, 1.95, 0.447, 0.453, F, TZ, M.gap, { cast: false });
+  // stainless french-door fridge, freezer drawer, water dispenser
+  B(1.96, 2.84, 0.02, 1.99, TZ - 0.02, WZ - 0.02, KS.steel, { solid: true });
+  B(2.397, 2.403, 0.85, 1.99, TZ - 0.026, TZ - 0.02, M.gap, { cast: false }); B(1.96, 2.84, 0.847, 0.853, TZ - 0.026, TZ - 0.02, M.gap, { cast: false });
+  B(2.35, 2.365, 1.0, 1.85, TZ - 0.07, TZ - 0.02, KS.steel); B(2.435, 2.45, 1.0, 1.85, TZ - 0.07, TZ - 0.02, KS.steel);
+  B(2.1, 2.7, 0.74, 0.755, TZ - 0.07, TZ - 0.02, KS.steel); B(2.06, 2.28, 1.25, 1.6, TZ - 0.024, TZ - 0.02, KS.glass, { cast: false });
+  // coffee corner with espresso machine, grinder and cups
+  B(2.85, 3.7, 0.08, 0.86, TZ, WZ, M.wood, { solid: true }); B(2.85, 3.7, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
+  B(2.85, 3.72, 0.86, 0.9, TZ - 0.02, WZ, M.counter); gaps('x', TZ, 2.85, 3.7, 0.425, 0.1, 0.84, F);
+  B(2.85, 3.72, 0.9, 1.5, WZ - 0.012, WZ, M.counter, { cast: false });
+  B(2.85, 3.72, 1.5, 2.4, WZ - 0.35, WZ, M.wood); gaps('x', WZ - 0.35, 2.85, 3.72, 0.435, 1.52, 2.38, WZ - 0.354);
+  B(2.87, 3.7, 1.49, 1.5, WZ - 0.32, WZ - 0.04, M.led, { cast: false });
+  B(2.98, 3.34, 0.9, 1.3, WZ - 0.42, WZ - 0.05, KS.steel); B(2.98, 3.34, 1.3, 1.32, WZ - 0.42, WZ - 0.05, M.black);
+  B(3.02, 3.3, 0.9, 0.93, WZ - 0.47, WZ - 0.3, M.black, { cast: false }); C(3.16, WZ - 0.36, 0.035, 1.02, 1.1, M.black, { seg: 16 });
+  C(3.1, WZ - 0.4, 0.035, 0.93, 1.0, M.ceramic, { seg: 20 }); C(3.48, WZ - 0.2, 0.06, 0.9, 1.25, M.black, { rt: 0.05, seg: 20 });
+  for (const x of [3.55, 3.63]) C(x, WZ - 0.4, 0.035, 0.9, 0.97, M.ceramic, { seg: 20 });
 }
 
 // Living: matches the approved render (3 + 3 + 1 + 1, warm modern)
@@ -849,7 +861,17 @@ for (const [a, b] of [[5.95, 6.55], [8.05, 8.6]]){
 for (let x = 6.55; x < 8.045; x += 0.042) B(x + 0.003, Math.min(x + 0.039, 8.05), 0, 3.0, 3.962, 4.0, LV.oak, { cast: false });
 B(6.5, 8.1, 1.05, 1.98, 3.925, 3.962, M.black);
 B(6.0, 8.55, 0.28, 0.55, 3.55, 3.962, LV.walnut); B(6.05, 8.5, 0.275, 0.28, 3.6, 3.93, M.led, { cast: false });
-C(6.25, 3.74, 0.08, 0.55, 0.9, M.ceramic, { rt: 0.05 }); C(6.45, 3.76, 0.055, 0.55, 0.75, M.black, { rt: 0.035 });
+for (const [a, b, cx] of [[5.97, 6.53, 6.25], [8.07, 8.58, 8.325]]){
+  for (const y of [0.98, 1.55, 2.12]){
+    B(a, b, y, y + 0.03, 3.7, 3.955, LV.walnut); B(a + 0.02, b - 0.02, y - 0.004, y, 3.72, 3.94, M.led, { cast: false });
+  }
+  B(cx - 0.14, cx + 0.12, 1.01, 1.05, 3.76, 3.92, LV.knit); B(cx - 0.12, cx + 0.1, 1.05, 1.08, 3.77, 3.91, LV.velvet);
+  C(cx + 0.14, 3.83, 0.045, 1.01, 1.2, M.ceramic, { rt: 0.03, seg: 24 });
+  C(cx, 3.83, 0.08, 1.58, 1.9, LV.marble, { rt: 0.045, seg: 32 });
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.075, 32, 16), M.metal); orb.position.set(cx, 2.225, 3.83); orb.castShadow = true; root.add(orb);
+}
+C(6.3, 3.75, 0.075, 0.55, 0.88, M.ceramic, { rt: 0.045, seg: 32 }); C(8.25, 3.75, 0.075, 0.55, 0.88, M.ceramic, { rt: 0.045, seg: 32 });
+B(7.1, 7.5, 0.55, 0.6, 3.65, 3.9, LV.knit);
 // curtains: sheers across both window walls, taupe velvet side panels
 curtainW(true, -0.6, 5.0, 8.56, LV.sheer); curtainW(false, 8.555, -0.62, 3.62, LV.sheer);
 for (const [a, b] of [[5.0, 5.42], [8.1, 8.52]]) curtainW(true, -0.55, a, b, LV.drape, 2.97, 0.04, 0.14);
@@ -881,10 +903,13 @@ B(-1.16, 0.82, 0, 2.4, 7.25, 7.85, M.wood, { solid: true }); gaps('x', 7.25, -1.
 plant(-0.85, 6.6, 0.9);
 
 // Laundry
-B(4.0, 5.95, 0.85, 1.5, 5.638, 5.65, M.bathWall, { cast: false });
-vanity(4.14, 4.95, 5.638, -1);
-B(5.13, 5.77, 0, 0.85, 5.05, 5.638, M.ceramic, { solid: true }); C(5.45, 5.045, 0.2, 0.32, 0.36, M.black, { cast: false }).rotation.x = Math.PI / 2;
-B(5.05, 5.9, 1.62, 2.35, 5.3, 5.638, M.wood);
+// built-in laundry cabinet (washer + utility sink inside), next to the bathroom door
+B(4.02, 5.9, 0, 0.08, 5.06, 5.638, M.gap, { cast: false });
+B(4.0, 5.9, 0.08, 2.5, 5.0, 5.638, M.wood, { solid: true });
+for (const u of [4.47, 4.95, 5.42]) B(u - 0.003, u + 0.003, 0.08, 2.5, 4.994, 5.0, M.gap, { cast: false });
+B(4.0, 5.9, 2.097, 2.103, 4.994, 5.0, M.gap, { cast: false });
+for (const u of [4.43, 4.51, 5.38, 5.46]) B(u - 0.007, u + 0.007, 0.85, 1.65, 4.955, 4.994, M.metal);
+B(4.0, 5.9, 2.5, 2.52, 5.0, 5.638, M.led, { cast: false });
 
 // Bathroom with tub (2.50 × 1.50)
 B(7.85, 8.588, 0, 0.55, 4.162, 5.638, M.bathWall, { solid: true });
@@ -916,8 +941,23 @@ B(-0.6, 1.9, 0, 0.012, 8.4, 9.5, M.rug, { cast: false });
 bed(3.79, 5.83, 9.29, 11.33, M.bedding);
 nightstand(3.17, 3.73, 10.88, 11.33); nightstand(5.89, 6.45, 10.88, 11.33);
 B(3.4, 6.2, 0, 0.012, 8.75, 10.9, M.rug, { cast: false });
-B(4.15, 5.45, 0.0, 0.45, 8.75, 9.15, M.fabric2);
+B(4.15, 5.45, 0.0, 0.45, 8.88, 9.24, M.fabric2);
 plant(6.75, 8.45, 0.9);
+// desk on the wall beside the bed, opposite the balcony door
+B(2.77, 3.37, 0.74, 0.77, 8.4, 9.85, LV.walnut, { solid: true });
+B(2.77, 3.35, 0.6, 0.74, 8.44, 9.81, LV.walnut); B(2.77, 3.37, 0, 0.74, 8.4, 8.44, LV.walnut); B(2.77, 3.37, 0, 0.74, 9.81, 9.85, LV.walnut);
+B(3.349, 3.352, 0.6, 0.74, 8.9, 9.35, M.gap, { cast: false }); B(3.352, 3.36, 0.66, 0.675, 9.0, 9.25, M.metal);
+B(2.95, 3.22, 0.77, 0.782, 8.95, 9.3, M.black); B(2.92, 2.935, 0.782, 0.98, 8.95, 9.3, M.black);
+B(2.77, 3.0, 1.45, 1.48, 8.5, 9.75, LV.walnut); books(2.84, 1.48, 8.6); C(2.88, 9.6, 0.05, 1.48, 1.68, M.ceramic, { rt: 0.03, seg: 24 });
+C(3.08, 8.6, 0.07, 0.77, 0.79, M.metal, { seg: 24 }); C(3.08, 8.6, 0.01, 0.79, 1.15, M.metal, { seg: 8 }); C(3.12, 8.6, 0.08, 1.08, 1.18, LV.shade, { rt: 0.03, seg: 24 });
+C(3.62, 9.05, 0.26, 0.02, 0.05, M.metal, { seg: 32 }); C(3.62, 9.05, 0.025, 0.05, 0.44, M.metal, { seg: 12 });
+C(3.62, 9.05, 0.25, 0.44, 0.52, M.fabric2, { seg: 32 }); B(3.84, 3.9, 0.52, 0.95, 8.85, 9.25, M.fabric2);
+// TV wall opposite the bed: slim fluted oak band, 55" TV, floating console
+for (let x = 4.21; x < 5.405; x += 0.042) B(x + 0.003, Math.min(x + 0.039, 5.41), 0, 2.6, 8.04, 8.075, LV.oak, { cast: false });
+B(4.2, 5.42, 2.6, 2.62, 8.04, 8.09, M.led, { cast: false });
+B(4.2, 5.42, 1.0, 1.71, 8.075, 8.1, M.black);
+B(4.06, 5.56, 0.35, 0.6, 8.04, 8.42, LV.walnut); B(4.1, 5.52, 0.345, 0.35, 8.08, 8.38, M.led, { cast: false });
+C(4.25, 8.24, 0.06, 0.6, 0.86, M.ceramic, { rt: 0.035, seg: 24 }); B(5.2, 5.45, 0.6, 0.64, 8.14, 8.34, LV.knit);
 
 // Balcony
 B(8.8, 8.83, 0, 1.08, 7.75, 11.64, M.glass, { cast: false, recv: false }); B(8.79, 8.84, 1.08, 1.11, 7.75, 11.64, M.metal);
@@ -930,14 +970,14 @@ plant(8.5, 8.05, 1); plant(8.5, 11.3, 0.9);
 const ROOMS = [
   { id: 'entry', name: 'المدخل', dims: '', area: 0, at: [-0.6, 6.35], walk: [-0.75, 6.5, -1.45] },
   { id: 'hall', name: 'الصالة', dims: '3.85 × 3.59', area: 3.85 * 3.59, at: [2.0, 6.75], walk: [3.3, 6.9, 0.6] },
-  { id: 'kitchen', name: 'المطبخ', dims: '4.38 × 3.35', area: 4.38 * 3.35, at: [2.2, 1.6], walk: [3.35, 1.05, 2.3] },
+  { id: 'kitchen', name: 'المطبخ', dims: '4.38 × 3.35', area: 4.38 * 3.35, at: [2.2, 1.6], walk: [2.4, 1.0, Math.PI] },
   { id: 'living', name: 'الصالون', dims: '3.60 × 4.64', area: 3.6 * 4.64, at: [6.8, 3.2], walk: [5.05, 3.72, -0.7] },
-  { id: 'laundry', name: 'الغسيل', dims: '1.95 × 1.84', area: 1.95 * 1.84, at: [4.95, 4.45], walk: [4.6, 4.2, Math.PI] },
+  { id: 'laundry', name: 'الغسيل', dims: '1.95 × 1.84', area: 1.95 * 1.84, at: [4.95, 4.45], walk: [4.95, 3.35, Math.PI] },
   { id: 'bath1', name: 'حمام البانيو', dims: '2.50 × 1.50', area: 2.5 * 1.5, at: [7.0, 4.95], walk: [6.45, 4.65, -Math.PI / 2] },
   { id: 'bath2', name: 'حمام الماستر', dims: '2.50 × 1.70', area: 2.5 * 1.7, at: [7.2, 6.55], walk: [6.55, 6.75, -0.45] },
   { id: 'dress', name: 'غرفة الملابس', dims: '1.95 × 2.10', area: 1.95 * 2.1, at: [5.25, 6.75], walk: [5.3, 7.5, 0.5] },
   { id: 'kids', name: 'غرفة الأولاد', dims: '3.78 × 3.39', area: 3.78 * 3.39, at: [0.73, 8.7], walk: [2.2, 8.5, Math.PI - 0.6] },
-  { id: 'master', name: 'غرفة النوم الرئيسية', dims: '4.28 × 3.35', area: 4.28 * 3.35, at: [4.8, 8.5], walk: [3.3, 8.55, -(Math.PI - 0.6)] },
+  { id: 'master', name: 'غرفة النوم الرئيسية', dims: '4.28 × 3.35', area: 4.28 * 3.35, at: [4.8, 8.5], walk: [5.6, 10.3, 0.5] },
   { id: 'balcony', name: 'البرندة', dims: '≈ 1.55 × 3.90', area: 1.55 * 3.9, at: [8.07, 9.2], walk: [8.0, 8.6, Math.PI] },
 ];
 const lamps = ROOMS.map(R => { const l = new THREE.PointLight(0xffd7a8, 0, 8, 2); l.position.set(R.at[0], 2.65, R.at[1]); scene.add(l); return l; });
