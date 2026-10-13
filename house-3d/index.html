@@ -168,6 +168,7 @@ button,select,input{font:inherit;color:inherit}
       <ul class="notes">
         <li class="flag"><b>غرفة الملابس 1.95 × 2.10:</b> طلعت هيك حسب الرسم. 2.30 ما بتزبط مع باقي المخطط، لأن غرفة النوم الرئيسية 3.35 وحمام الماستر 1.70 بيحدّوها. إذا القياس الفعلي 2.30، قلّي مين اللي بيتغير.</li>
         <li class="flag"><b>ارتفاع السقف 3.00 م:</b> افتراضي. إذا عندك غيره بعدّله.</li>
+        <li><b>بين المطبخ والصالة:</b> جدار 15 سم. من جهة المطبخ عليه فرن ومايكرويف، ثلاجة بلت‑إن 90 سم، خزانة مونة، وركن قهوة.</li>
         <li><b>الجدران:</b> الداخلية 15 سم (طوب وقصارة)، والخارجية 25 سم مكسوّة حجر.</li>
         <li><b>الأبواب:</b> ارتفاعها 2.10 م وعرضها 70–85 سم. باب المدخل 95 × 220 سم.</li>
         <li><b>الشبابيك:</b> ألمنيوم RAL 9006. شبابيك الصالون من 45 سم فوق البلاط، وشبابيك الغرف من متر.</li>
@@ -432,7 +433,7 @@ const OPTS = {
     { id: 'cash', name: 'كشمير', spec: 'لاكر مطفي', color: '#CDBFAD', rough: 0.4 },
     { id: 'gloss', name: 'أبيض لامع', spec: 'هاي جلوس', color: '#F2F0EB', rough: 0.12 },
   ] },
-  counter: { title: 'الرخام والكوارتز', short: 'سطح المطبخ والطاولات', where: 'سطح المطبخ والبار، طاولات الوسط، وجدار التلفزيون.', items: [
+  counter: { title: 'الرخام والكوارتز', short: 'سطح المطبخ والطاولات', where: 'سطح المطبخ، طاولات الوسط، وجدار التلفزيون.', items: [
     { id: 'wq', name: 'كوارتز أبيض بعروق', spec: 'لامع', rough: 0.1, tex: () => marble({ w: 3, h: 1.5, base: '#F3F1ED', cloud: '#E6E2DB', seed: 51, veins: [{ c: '#A39D95', a: 0.4, n: 7, wmin: 0.5, wmax: 2.2, ang: 0.3 }] }) },
     { id: 'nero', name: 'نيرو ماركينا', spec: 'رخام أسود', rough: 0.1, tex: () => marble({ w: 3, h: 1.5, base: '#1E1D1C', cloud: '#2C2A28', seed: 52, veins: [{ c: '#E9E5DC', a: 0.75, n: 9, wmin: 0.4, wmax: 1.8, ang: 0.5 }] }) },
     { id: 'bq', name: 'كوارتز بيج', spec: 'لامع', rough: 0.12, tex: () => marble({ w: 3, h: 1.5, base: '#E4D6BF', cloud: '#D6C4A6', seed: 53, veins: [{ c: '#BFA47C', a: 0.35, n: 6, wmin: 0.5, wmax: 2, ang: 0.3 }] }) },
@@ -605,6 +606,7 @@ W(3.85, 4.0, 5.65, 8.04);
 W(2.77, 5.95, 7.89, 8.04, [{ a: 2.95, b: 3.8, head: 2.1, k: 'door', hinge: 'a', swing: '-z' }]);
 W(-1.16, 2.62, 7.85, 8.0, [{ a: 1.66, b: 2.51, head: 2.1, k: 'door', hinge: 'b', swing: '+z' }]);
 W(2.62, 2.77, 7.85, 11.39);
+W(0, 4.38, 3.35, 3.5);                                         // kitchen / hall wall
 // bathroom tile cladding
 clad(6.1, 8.6, 4.15, 4.162); clad(6.1, 8.6, 5.638, 5.65);
 clad(6.1, 6.112, 4.15, 5.65, [{ a: 4.3, b: 5.0, head: 2.1 }]); clad(8.588, 8.6, 4.15, 5.65, [{ a: 4.9, b: 5.4, sill: 1.6, head: 2.2 }]);
@@ -677,18 +679,17 @@ function chandelier(x, z, r, y){
   const glow = new THREE.Mesh(new THREE.TorusGeometry(r - 0.02, 0.012, 8, 64), M.led); glow.rotation.x = Math.PI / 2; glow.position.set(x, y - 0.02, z); root.add(glow);
   for (const a of [0, 2.094, 4.189]) C(x + Math.cos(a) * r, z + Math.sin(a) * r, 0.004, y, H, M.metal, { seg: 6, cast: false });
 }
-function stool(x, z){ C(x, z, 0.2, 0, 0.02, M.metal); C(x, z, 0.025, 0.02, 0.68, M.metal); C(x, z, 0.19, 0.68, 0.76, M.fabric2); }
 function chair(x, z, face){ // outdoor lounge chair, face = direction seated person looks
   B(x - 0.3, x + 0.3, 0, 0.38, z - 0.3, z + 0.3, M.fabric2, { solid: true });
   if (face === '-x') B(x + 0.22, x + 0.3, 0.38, 0.78, z - 0.3, z + 0.3, M.fabric2);
   else B(x - 0.3, x + 0.3, 0.38, 0.78, z + 0.22, z + 0.3, M.fabric2);
 }
 
-// Kitchen: L-shaped run + peninsula, tall unit, bar toward the hall
-B(0, 0.6, 0.08, 0.86, 0, 2.6, M.wood, { solid: true }); B(0.62, 3.78, 0.08, 0.86, 0, 0.6, M.wood, { solid: true }); B(3.78, 4.38, 0.08, 0.86, 0, 2.0, M.wood, { solid: true });
-B(0, 0.56, 0, 0.08, 0, 2.6, M.gap, { cast: false }); B(0.62, 3.78, 0, 0.08, 0, 0.56, M.gap, { cast: false }); B(3.82, 4.38, 0, 0.08, 0, 2.0, M.gap, { cast: false });
-B(0, 0.62, 0.86, 0.9, 0, 2.62, M.counter); B(0.62, 3.78, 0.86, 0.9, 0, 0.62, M.counter); B(3.76, 4.4, 0.86, 0.9, 0, 2.02, M.counter);
-gaps('x', 0.6, 0.62, 3.78, 0.6, 0.1, 0.84, 0.6); gaps('z', 0.6, 0.62, 2.6, 0.6, 0.1, 0.84, 0.6); gaps('z', 3.78, 0.62, 2.0, 0.69, 0.1, 0.84, 3.776);
+// Kitchen: L-shaped run + peninsula, tall appliance wall toward the hall
+B(0, 0.6, 0.08, 0.86, 0, 3.35, M.wood, { solid: true }); B(0.62, 3.78, 0.08, 0.86, 0, 0.6, M.wood, { solid: true }); B(3.78, 4.38, 0.08, 0.86, 0, 2.0, M.wood, { solid: true });
+B(0, 0.56, 0, 0.08, 0, 3.35, M.gap, { cast: false }); B(0.62, 3.78, 0, 0.08, 0, 0.56, M.gap, { cast: false }); B(3.82, 4.38, 0, 0.08, 0, 2.0, M.gap, { cast: false });
+B(0, 0.62, 0.86, 0.9, 0, 3.35, M.counter); B(0.62, 3.78, 0.86, 0.9, 0, 0.62, M.counter); B(3.76, 4.4, 0.86, 0.9, 0, 2.02, M.counter);
+gaps('x', 0.6, 0.62, 3.78, 0.6, 0.1, 0.84, 0.6); gaps('z', 0.6, 0.62, 2.73, 0.6, 0.1, 0.84, 0.6); gaps('z', 3.78, 0.62, 2.0, 0.69, 0.1, 0.84, 3.776);
 B(2.05, 2.75, 0.9, 0.903, 0.1, 0.5, M.black, { cast: false }); C(2.4, 0.08, 0.016, 0.9, 1.22, M.metal); B(2.388, 2.412, 1.19, 1.22, 0.08, 0.3, M.metal);
 B(0.06, 0.56, 0.9, 0.905, 1.62, 2.3, M.black, { cast: false });
 B(0, 0.5, 1.66, 1.76, 1.62, 2.3, M.black); B(0, 0.3, 1.76, H, 1.8, 2.12, M.black);
@@ -696,12 +697,33 @@ B(0, 1.72, 1.5, 2.4, 0, 0.35, M.wood); B(3.06, 3.8, 1.5, 2.4, 0, 0.35, M.wood); 
 gaps('x', 0.35, 0, 1.72, 0.43, 1.52, 2.38, 0.35); gaps('x', 0.35, 3.06, 3.8, 0.37, 1.52, 2.38, 0.35);
 B(0.02, 1.7, 1.49, 1.5, 0.04, 0.32, M.led, { cast: false }); B(3.08, 3.78, 1.49, 1.5, 0.04, 0.32, M.led, { cast: false });
 B(0, 1.81, 0.9, 1.5, 0, 0.012, M.counter, { cast: false }); B(1.81, 2.97, 0.9, 1.1, 0, 0.012, M.counter, { cast: false }); B(2.97, 3.8, 0.9, 1.5, 0, 0.012, M.counter, { cast: false });
-B(0, 0.012, 0.9, 1.5, 0.62, 1.62, M.counter, { cast: false }); B(0, 0.012, 0.9, 1.66, 1.62, 2.3, M.counter, { cast: false });
-B(0, 0.62, 0, 2.4, 2.62, 3.33, M.wood, { solid: true }); B(0.62, 0.626, 0.9, 1.5, 2.68, 3.27, M.black, { cast: false });
-gaps('z', 0.62, 2.62, 3.33, 0.355, 0.05, 2.38, 0.62);
-B(0.7, 4.38, 0, 1.02, 3.36, 3.52, M.wood, { solid: true }); B(0.66, 4.38, 1.02, 1.06, 3.04, 3.56, M.counter);
-for (const x of [1.35, 2.05, 2.75, 3.45]) stool(x, 2.82);
-chandelier(2.5, 3.0, 0.32, 2.2);
+B(0, 0.012, 0.9, 1.5, 0.62, 1.62, M.counter, { cast: false }); B(0, 0.012, 0.9, 1.66, 1.62, 2.3, M.counter, { cast: false }); B(0, 0.012, 0.9, 1.5, 2.3, 3.35, M.counter, { cast: false });
+B(0, 0.35, 1.5, 2.4, 2.3, 3.35, M.wood); gaps('z', 0.35, 2.3, 3.35, 0.525, 1.52, 2.38, 0.35);
+// tall units on the kitchen/hall wall (front face z = 2.73): oven + microwave, fridge, pantry, then a coffee corner
+{
+  const TZ = 2.73, WZ = 3.35, F = TZ - 0.006;
+  B(0.62, 2.72, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
+  B(0.62, 2.72, 0.08, H, TZ, WZ, M.wood, { solid: true });
+  for (const u of [1.22, 2.12]) B(u - 0.003, u + 0.003, 0.08, H, F, TZ, M.gap, { cast: false });
+  B(0.62, 2.72, 2.397, 2.403, F, TZ, M.gap, { cast: false });
+  // oven + microwave column
+  B(0.67, 1.17, 0.78, 1.38, F, TZ, M.black, { cast: false }); B(0.72, 1.12, 1.32, 1.335, TZ - 0.045, F, M.metal);
+  B(0.67, 1.17, 1.46, 1.84, F, TZ, M.black, { cast: false }); B(0.72, 1.12, 1.79, 1.805, TZ - 0.045, F, M.metal);
+  B(0.62, 1.22, 0.447, 0.453, F, TZ, M.gap, { cast: false });
+  // integrated french-door fridge with freezer drawer
+  B(1.22, 2.12, 0.847, 0.853, F, TZ, M.gap, { cast: false }); B(1.667, 1.673, 0.85, 2.4, F, TZ, M.gap, { cast: false });
+  B(1.62, 1.635, 1.0, 1.95, TZ - 0.05, F, M.metal); B(1.705, 1.72, 1.0, 1.95, TZ - 0.05, F, M.metal);
+  B(1.45, 1.89, 0.74, 0.755, TZ - 0.05, F, M.metal);
+  // pantry
+  B(2.165, 2.18, 0.9, 1.7, TZ - 0.05, F, M.metal);
+  // coffee corner
+  B(2.72, 3.7, 0.08, 0.86, TZ, WZ, M.wood, { solid: true }); B(2.72, 3.7, 0, 0.08, TZ + 0.04, WZ, M.gap, { cast: false });
+  B(2.72, 3.72, 0.86, 0.9, TZ - 0.02, WZ, M.counter); gaps('x', TZ, 2.72, 3.7, 0.49, 0.1, 0.84, F);
+  B(2.72, 3.72, 0.9, 1.5, WZ - 0.012, WZ, M.counter, { cast: false });
+  B(2.72, 3.72, 1.5, 2.4, WZ - 0.35, WZ, M.wood); gaps('x', WZ - 0.35, 2.72, 3.72, 0.5, 1.52, 2.38, WZ - 0.354);
+  B(2.74, 3.7, 1.49, 1.5, WZ - 0.32, WZ - 0.04, M.led, { cast: false });
+  B(2.85, 3.17, 0.9, 1.28, WZ - 0.44, WZ - 0.06, M.black); B(3.38, 3.58, 0.9, 1.15, WZ - 0.3, WZ - 0.06, M.ceramic);
+}
 
 // Living
 sofa(7.6, 8.5, 0.47, 3.03, '+x');
@@ -718,6 +740,7 @@ plant(8.3, -0.35, 1.1); plant(4.95, 3.15, 0.9);
 // Hall
 sofa(0.06, 0.93, 3.57, 6.13, '-x', { arms: [false, true] });
 sofa(0.93, 2.62, 3.57, 4.37, '-z', { arms: [false, true] });
+B(0.9, 2.7, 1.25, 1.95, 3.5, 3.52, M.counter, { cast: false });   // art panel on the hall side of the kitchen wall
 B(0.95, 2.95, 0, 0.012, 4.45, 6.2, M.rug, { cast: false });
 C(1.85, 5.15, 0.45, 0.36, 0.4, M.counter, { seg: 40 }); C(1.85, 5.15, 0.16, 0.012, 0.36, M.metal);
 chandelier(1.85, 5.15, 0.4, 2.45);
@@ -776,7 +799,7 @@ plant(8.5, 8.05, 1); plant(8.5, 11.3, 0.9);
 const ROOMS = [
   { id: 'entry', name: 'المدخل', dims: '', area: 0, at: [-0.6, 6.35], walk: [-0.75, 6.5, -1.45] },
   { id: 'hall', name: 'الصالة', dims: '3.85 × 3.59', area: 3.85 * 3.59, at: [2.0, 6.75], walk: [3.3, 6.9, 0.6] },
-  { id: 'kitchen', name: 'المطبخ', dims: '4.38 × 3.35', area: 4.38 * 3.35, at: [2.2, 1.6], walk: [3.3, 2.35, 0.8] },
+  { id: 'kitchen', name: 'المطبخ', dims: '4.38 × 3.35', area: 4.38 * 3.35, at: [2.2, 1.6], walk: [3.35, 1.05, 2.3] },
   { id: 'living', name: 'الصالون', dims: '3.60 × 4.64', area: 3.6 * 4.64, at: [6.8, 3.2], walk: [5.4, 3.6, -0.6] },
   { id: 'laundry', name: 'الغسيل', dims: '1.95 × 1.84', area: 1.95 * 1.84, at: [4.95, 4.45], walk: [4.6, 4.2, Math.PI] },
   { id: 'bath1', name: 'حمام البانيو', dims: '2.50 × 1.50', area: 2.5 * 1.5, at: [7.0, 4.95], walk: [6.45, 4.65, -Math.PI / 2] },
