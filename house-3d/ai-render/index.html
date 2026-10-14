@@ -1,0 +1,125 @@
+<title>دليل رندر الدار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: single reading column; each room is a card with its base image on top and the copyable prompt below */
+:root{
+  --bg:#F2ECE3; --surface:#FBF8F3; --surface-2:#F0E9DE; --fg:#2A251F; --muted:#76695A; --line:#E2D8C9;
+  --accent:#8C6B3F; --on-accent:#FFFDF9; --code-bg:#F6F1E9;
+  --f-display:"Reem Kufi","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#191613; --surface:#221E1A; --surface-2:#2B2621; --fg:#EEE5D8; --muted:#A99A86; --line:#3A332B; --accent:#CBA56B; --on-accent:#1A1612; --code-bg:#1D1A16; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --bg:#191613; --surface:#221E1A; --surface-2:#2B2621; --fg:#EEE5D8; --muted:#A99A86; --line:#3A332B; --accent:#CBA56B; --on-accent:#1A1612; --code-bg:#1D1A16; color-scheme:dark; }
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);direction:rtl;line-height:1.7;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:880px;margin:0 auto;display:grid;gap:28px}
+h1{font-family:var(--f-display);font-weight:600;font-size:clamp(26px,5vw,36px);margin:0;line-height:1.25;text-wrap:balance}
+.lede{margin:6px 0 0;color:var(--muted);max-width:65ch}
+.steps{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 22px}
+.steps h2,.style h2{font-family:var(--f-display);font-size:19px;margin:0 0 8px}
+.steps ol{margin:0;padding-inline-start:22px;display:grid;gap:6px}
+.steps b{font-weight:600}
+.tip{margin:12px 0 0;font-size:13.5px;color:var(--muted)}
+.room{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.room img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--surface-2)}
+.room-body{padding:16px 20px 20px;display:grid;gap:10px}
+.room-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.room-h h3{margin:0;font-family:var(--f-display);font-size:20px;font-weight:600}
+.dims{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;direction:ltr}
+.note{margin:0;font-size:13.5px;color:var(--muted)}
+.prompt{position:relative;background:var(--code-bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px;direction:ltr;text-align:left;font-family:var(--f-mono);font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;min-width:0}
+.prompt-label{font-size:12px;color:var(--muted);font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.copy{border:0;background:var(--accent);color:var(--on-accent);border-radius:9px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.variant{display:grid;gap:6px}
+.style{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 22px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>دليل رندر الدار</h1>
+    <p class="lede">صور أساسية لكل غرفة من المجسّم، بمقاسات المخطط والتوزيعة اللي اخترتها. لكل صورة وصف جاهز بالإنجليزي مكتوب على ستايل صورك المرجعية. أداة الرندر بالذكاء الاصطناعي بتحافظ على شكل الغرفة وبتطلعها واقعية.</p>
+  </header>
+
+  <section class="steps">
+    <h2>كيف تستعملها</h2>
+    <ol>
+      <li>افتح أي أداة رندر داخلي بالذكاء الاصطناعي بتقبل <b>رفع صورة</b>. دوّر على "AI interior render from image".</li>
+      <li>ارفع صورة الغرفة، وانسخ الوصف تبعها والصقه بخانة الوصف (Prompt).</li>
+      <li>اختار وضع <b>المحافظة على الشكل</b> (Structure أو Keep layout)، وخلّي القوة بين <b>60% و 75%</b>. إذا الأداة غيّرت الحيطان أو الشبابيك ارفعها، وإذا طلعت الصورة شبه المجسّم كتير نزّلها.</li>
+      <li>إذا في خانة "Negative prompt"، الصق فيها النص اللي بآخر الصفحة.</li>
+      <li>طلّع الصورة بـ 4K، وبعدها كبّرها لـ 8K بأداة التكبير (Upscale) بنفس الموقع.</li>
+    </ol>
+    <p class="tip">ارفع كمان صورك المرجعية إذا الأداة بتقبل "Style reference"، عشان النتيجة تطلع أقرب لذوقك.</p>
+  </section>
+
+  <div id="rooms"></div>
+
+  <section class="style">
+    <h2>النص السلبي (Negative prompt)</h2>
+    <div class="variant">
+      <div class="prompt-label"><span>لكل الصور</span><button type="button" class="copy" data-target="neg">انسخ</button></div>
+      <div class="prompt" id="neg">changed layout, moved walls, extra windows, extra doors, distorted perspective, warped furniture, cartoon, CGI look, plastic textures, low resolution, blurry, noisy, oversaturated colors, text, watermark, logo, people</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const COMMON = 'Keep the exact room layout, walls, windows, doors, ceiling and camera angle of the input image. Photorealistic architectural interior photography, warm modern luxury style, beige and ivory palette with walnut and brushed brass accents, gypsum board ceiling with hidden warm LED cove lighting, large glossy Calacatta porcelain floor tiles, natural daylight with soft shadows, 24mm lens, high dynamic range, ultra detailed, Corona render quality, 8k.';
+const ROOMS = [
+  { img: 'img/ai_living_a.jpg', name: 'الصالون: الجلسة', dims: '3.60 × 4.64 m',
+    note: 'كنبتين ثلاثيات وكرسيين (3+3+1+1)، والشبابيك عليها ستاير شيفون.',
+    p: 'Warm modern luxury living room. Two tailored three-seat sofas in smooth ivory woven fabric with neatly arranged mocha and sand cushions, two matching ivory armchairs with slim brass legs. Round white marble coffee table on a dark walnut pedestal and a small dark walnut side table, large soft cream rug with a subtle abstract pattern. Floor-to-ceiling sheer linen curtains with taupe velvet side drapes. Slim black magnetic track lights in the ceiling and a sculptural white fabric wave pendant over the coffee table. Fiddle leaf fig trees in stone pots, styled coffee table books and ceramic vases. ' },
+  { img: 'img/ai_living_b.jpg', name: 'الصالون: جدار التلفزيون', dims: '3.60 × 4.64 m',
+    note: 'خشب سنديان مضلّع ورا الشاشة، ترافرتين على الجنبين، ووحدة معلّقة تحتها إضاءة.',
+    p: 'Warm modern luxury living room facing the TV wall. 75-inch TV mounted on light oak vertical fluted wood panels, flanked by large beige travertine slabs with thin joints, floating dark walnut console with warm LED underglow, ceramic vases and books on the console. Tailored ivory three-seat sofa with mocha and sand cushions in the foreground, ivory armchairs, round marble coffee table, fabric wave pendant, slim black magnetic track lights. ' },
+  { img: 'img/ai_kitchen.jpg', name: 'المطبخ', dims: '4.38 × 3.35 m',
+    note: 'خزاين جوز، سطح كوارتز أبيض، وجدار الأجهزة (فرن، مايكرويف، ثلاجة، مونة) على الحيط اللي بين المطبخ والصالة.',
+    p: 'Luxury modern kitchen. Handleless American walnut veneer cabinets, white quartz countertops and full-height backsplash with soft grey veining, black glass cooktop and slim black chimney hood, floor-to-ceiling appliance wall with built-in oven, microwave, panel-ready French-door fridge and pantry, coffee corner with open shelf lighting, warm LED strips under the wall cabinets, linear brushed brass pendant over the peninsula, two lines of black magnetic track lights in the ceiling, fruit bowl and ceramic vases as styling. ' },
+  { img: 'img/ai_hall.jpg', name: 'الصالة', dims: '3.85 × 3.59 m',
+    note: 'جلسة عائلية على شكل L عالجدار اللي بين الصالة والمطبخ.',
+    p: 'Warm modern family lounge. L-shaped ivory sofa with neat cushions against a feature wall with a large marble art panel, round marble coffee table with brass base, ring-shaped brass LED chandelier, soft cream rug, tall plant in the corner, recessed walnut entrance closet, gypsum ceiling with cove LED. ' },
+  { img: 'img/ai_master.jpg', name: 'غرفة النوم الرئيسية', dims: '4.28 × 3.35 m',
+    note: 'في وصفين، حسب أي صورة من صورك عجبتك أكتر.',
+    variants: [
+      { label: 'مثل الصورة الرابعة: مودرن بخشب غامق', p: 'Modern luxury master bedroom. Dark smoked oak wall paneling with vertical slats behind the bed and a backlit horizontal niche, tall upholstered beige panel headboard, crisp white bedding, curved oval upholstered bench at the foot of the bed, floating nightstands with brass details, gypsum drop ceiling with recessed LED trough and black square downlights, floor-to-ceiling sheer curtains, warm oak parquet floor, wardrobe wall in dark oak with brass handles. ' },
+      { label: 'مثل الصورة الخامسة: ناعم وفخم', p: 'Soft luxury master bedroom. Greige wall molding panels, a large quilted velvet headboard panel in pale beige, tall mirrored panels on both sides of the bed with crystal table lamps, crystal and brass branch chandelier, layered bedding in ivory, blush and soft grey, tufted velvet bench with a throw, round marble side table with brass base, sheer floor-to-ceiling curtains, light oak floor with a large soft rug. ' },
+    ] },
+  { img: 'img/ai_kids.jpg', name: 'غرفة الأولاد', dims: '3.78 × 3.39 m',
+    note: 'تختين مفرد والشباك بينهم.',
+    p: 'Warm modern kids bedroom. Two single beds with upholstered beige headboards, sage green and ivory bedding, oak nightstand between the beds with a small lamp, warm oak parquet floor, soft round rug, sheer curtains on the window between the beds, elegant and calm, a few framed prints. ' },
+  { img: 'img/ai_bath_master.jpg', name: 'حمام الماستر (دش)', dims: '2.50 × 1.70 m',
+    note: 'دش ووك‑إن بزجاج، تواليت معلّق، ومغسلة معلّقة.',
+    p: 'Luxury master bathroom. Large-format Calacatta gold marble porcelain on walls and floor, walk-in shower with frameless glass and brushed brass profile, ceiling rain shower, linear floor drain, wall-hung toilet with brass flush plate, floating walnut vanity with a white vessel basin and brushed brass faucet, backlit LED mirror, small window with frosted glass. ' },
+  { img: 'img/ai_bath_tub.jpg', name: 'الحمام التاني (بانيو)', dims: '2.50 × 1.50 m',
+    note: 'بانيو مكسي رخام على طول الجدار.',
+    p: 'Luxury bathroom with a built-in bathtub clad in Calacatta marble porcelain, brushed brass bath spout, large-format marble walls and floor, floating walnut vanity with vessel basin and brass faucet, backlit LED mirror, wall-hung toilet, small frosted window, rolled white towels and a small plant. ' },
+];
+const host = document.getElementById('rooms');
+let n = 0;
+function promptBlock(label, text){
+  const id = 'p' + (n++);
+  return `<div class="variant"><div class="prompt-label"><span>${label}</span><button type="button" class="copy" data-target="${id}">انسخ</button></div><div class="prompt" id="${id}">${text}${COMMON}</div></div>`;
+}
+host.style.display = 'grid'; host.style.gap = '28px';
+for (const r of ROOMS){
+  const el = document.createElement('article'); el.className = 'room';
+  const prompts = r.variants ? r.variants.map(v => promptBlock(v.label, v.p)).join('') : promptBlock('الوصف (Prompt)', r.p);
+  el.innerHTML = `<img src="${r.img}" alt="${r.name}" loading="lazy"><div class="room-body"><div class="room-h"><h3>${r.name}</h3><span class="dims">${r.dims}</span></div><p class="note">${r.note}</p>${prompts}</div>`;
+  host.append(el);
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.copy'); if (!b) return;
+  const t = document.getElementById(b.dataset.target).textContent;
+  const done = ok => { const old = b.textContent; b.textContent = ok ? 'تم النسخ' : 'انسخ يدوي'; setTimeout(() => b.textContent = old, 1800); };
+  try { navigator.clipboard.writeText(t).then(() => done(true), () => fallback(t, done)); } catch (err) { fallback(t, done); }
+});
+function fallback(t, done){
+  const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.append(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); done(ok);
+}
+</script>

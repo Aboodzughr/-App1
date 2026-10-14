@@ -1,0 +1,20 @@
+import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
+import fs from 'fs';
+const SP=process.argv[2]; let html=fs.readFileSync('/home/user/-App1/house-3d/index.html','utf8');
+html=html.replace('requestAnimationFrame(t => { last = t;','window.__dar={scene,root,ceilings,M,THREE};\nrequestAnimationFrame(t => { last = t;');
+const page_html='<!doctype html><html><head><meta charset="utf-8"></head><body>'+html+'</body></html>';
+const browser=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await (await browser.newContext({viewport:{width:800,height:600}})).newPage();
+page.on('pageerror',e=>console.log('ERR',e.message));
+await page.route('**/*',r=>{const u=r.request().url(); if(u.startsWith('http://local/'))return r.fulfill({body:page_html,contentType:'text/html'});
+ const m=u.match(/three@0\.160\.0\/(.*)$/); if(m)return r.fulfill({body:fs.readFileSync(SP+'/npm/node_modules/three/'+m[1]),contentType:'application/javascript'}); return r.abort();});
+await page.goto('http://local/'); await page.waitForFunction(()=>window.__dar,null,{timeout:60000});
+const b64=await page.evaluate(async()=>{
+  const {GLTFExporter}=await import('three/addons/exporters/GLTFExporter.js');
+  const D=window.__dar; for(const [k,m] of Object.entries(D.M)) m.name=k;
+  D.ceilings.visible=true; D.root.name='House'; D.ceilings.name='Ceilings';
+  const buf=await new GLTFExporter().parseAsync([D.root,D.ceilings],{binary:true,maxTextureSize:2048});
+  let s='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s);
+});
+fs.writeFileSync(SP+'/render/house.glb',Buffer.from(b64,'base64')); console.log('glb bytes',fs.statSync(SP+'/render/house.glb').size);
+await browser.close();
