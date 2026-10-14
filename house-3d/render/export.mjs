@@ -12,7 +12,7 @@ await page.goto('http://local/'); await page.waitForFunction(()=>window.__dar,nu
 const b64=await page.evaluate(async()=>{
   const {GLTFExporter}=await import('three/addons/exporters/GLTFExporter.js');
   const D=window.__dar; for(const [k,m] of Object.entries(D.M)) m.name=k;
-  D.ceilings.visible=true;
+  D.ceilings.visible=true; D.root.name='House'; D.ceilings.name='Ceilings';
   const buf=await new GLTFExporter().parseAsync([D.root,D.ceilings],{binary:true,maxTextureSize:2048});
   let s='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s);
 });
